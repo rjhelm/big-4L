@@ -2,66 +2,79 @@ import {
     Button,
     FormControl,
     FormLabel,
-    TextArea,
+    Textarea,
     Modal,
     ModalBody,
-    ModalClostButton,
+    ModalCloseButton,
     ModalContent,
-    ModalHeader,
     ModalFooter,
+    ModalHeader,
     ModalOverlay,
     HStack,
     useDisclosure,
-    ModalCloseButton
-} from '@chakra-ui/core';
-import React, { useState, useEffect } from 'react';
-import db from '../lib/firebase';
+} from "@chakra-ui/core";
+import React, { useState, useEffect } from "react";
+import db from "../lib/firebase";
 
 const AddNewPost = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState("");
     const [isSaving, setSaving] = useState(false);
 
     const handleSubmit = async () => {
         const date = new Date();
-        await db.collection('posts').add({
+
+        await db.collection("posts").add({
             title,
             upVotesCount: 0,
             downVotesCount: 0,
             createdAt: date.toUTCString(),
-            updatedAt: date.toUTCString()
+            updatedAt: date.toUTCString(),
         });
+
         onClose();
         setTitle("");
     };
 
     return (
         <>
-            <Button onClick={onOpen} colorScheme="purple">Add New Post</Button>
+            <Button onClick={onOpen} colorScheme="blue">
+                Add new post
+            </Button>
+
             <Modal onClose={onClose} isOpen={isOpen} isCentered>
                 <ModalOverlay>
-                    <ModalHeader>Add new post</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <FormControl id="post-title">
-                            <FormLabel>Post Title</FormLabel>
-                            <TextArea
-                            type="post-title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                        />
-                        </FormControl>
-                    </ModalBody>
-                    <ModalFooter>
-                        <HStack spacing={4}>
-                            <Button onClick={onClose}>Close</Button>
-                            <Button onClick={handleSubmit} colorScheme="purple" disabled={!title.trim()} isLoading={isSaving}>Save</Button>
-                        </HStack>
-                    </ModalFooter>
+                    <ModalContent>
+                        <ModalHeader>Add new post</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                            <FormControl id="post-title">
+                                <FormLabel>Post title</FormLabel>
+                                <Textarea
+                                    type="post-title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            </FormControl>
+                        </ModalBody>
+                        <ModalFooter>
+                            <HStack spacing={4}>
+                                <Button onClick={onClose}>Close</Button>
+                                <Button
+                                    onClick={handleSubmit}
+                                    colorScheme="blue"
+                                    disabled={!title.trim()}
+                                    isLoading={isSaving}
+                                >
+                                    Save
+                                </Button>
+                            </HStack>
+                        </ModalFooter>
+                    </ModalContent>
                 </ModalOverlay>
             </Modal>
         </>
-    )
-}
+    );
+};
 
 export default AddNewPost;
